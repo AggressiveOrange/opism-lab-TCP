@@ -3,6 +3,7 @@
 Same layout as the DNS and TLS stands: one Docker image, one generated compose file, one container per student.
 
     docker build -t tplab:latest image/
+    cp students.example.csv students.csv   # then edit: one row per student
     python3 gen.py students.csv --out stand
     cd stand && docker compose up -d && cd ..
     python3 check.py --stand stand
