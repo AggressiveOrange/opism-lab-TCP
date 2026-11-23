@@ -1,0 +1,24 @@
+#!/bin/bash
+# Start the stand and check it. Run from the transport-lab folder after every codespace (re)start.
+set -e
+cd "$(dirname "$0")"
+# The DNS and TLS stands use the same addresses (10.53.0.0/16); only one stand can run at once.
+for P in dnslab tlslab; do
+  if docker network inspect ${P}_lab >/dev/null 2>&1; then
+    echo "Зупиняю стенд $P (та сама адресація)..."
+    docker compose -p "$P" down
+  fi
+done
+docker image inspect tplab:latest >/dev/null 2>&1 || docker build -t tplab:latest image/
+C="docker compose -f stand/compose.yaml"
+$C up -d
+BR=br-$(docker network inspect tplab_lab -f '{{.Id}}' | cut -c1-12)
+# Docker-in-docker in Codespaces: a legacy iptables FORWARD DROP policy blocks traffic
+# between containers; allow traffic inside the stand's bridge in both tables.
+for IPT in iptables iptables-legacy; do
+  command -v "$IPT" >/dev/null || continue
+  sudo "$IPT" -C FORWARD -i "$BR" -o "$BR" -j ACCEPT 2>/dev/null \
+    || sudo "$IPT" -I FORWARD 1 -i "$BR" -o "$BR" -j ACCEPT
+done
+sleep 2
+python3 check.py --stand stand

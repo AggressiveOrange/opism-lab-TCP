@@ -1,0 +1,15 @@
+; Zone {{ s.id }}.lab for the transport lab. Everything needed is already here; no edits are required.
+$TTL 300
+@     IN SOA ns.{{ s.id }}.lab. admin.{{ s.id }}.lab. (
+            {{ serial }}01 ; serial
+            3600       ; refresh
+            600        ; retry
+            86400      ; expire
+            60         ; minimum
+        )
+@     IN NS ns.{{ s.id }}.lab.
+ns    IN A  {{ s.ip }}
+me    IN A  {{ s.ip }}
+
+; remote server for every task
+srv   IN A  10.53.0.80
