@@ -36,7 +36,16 @@
 Вивід кроку 1.1:
 
 ```text
-
+net.ipv4.ip_local_port_range = 32768    60999
+[5] 83
+[6] 84
+State              Recv-Q               Send-Q                             Local Address:Port                              Peer Address:Port              Process              
+ESTAB              116080               0                                      10.53.1.1:50374                               10.53.0.80:80                                     
+ESTAB              114936               0                                      10.53.1.1:50378                               10.53.0.80:80                                     
+ESTAB              99704                0                                      10.53.1.1:52836                               10.53.0.80:80                                     
+ESTAB              107536               0                                      10.53.1.1:52846                               10.53.0.80:80                                     
+bash: kill: %1: no such job
+bash: kill: %2: no such job
 ```
 
 | З'єднання | Адреса клієнта | Порт клієнта | Адреса сервера | Порт сервера |
