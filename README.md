@@ -29,7 +29,7 @@
 | Вікно для завдання 5, байт | 32768 |
 | Втрати для завдання 6 | 1% |
 
-<!-- Якщо стенд перезапускався під час роботи, вказати, після якого завдання. -->
+Стенд перезапускався після завдання 1.
 
 ## Завдання 1. Порти і встановлення з'єднання
 
@@ -107,13 +107,44 @@ tcpdump перехоплює пакети на інтерфейсі eth0 до т
 Вивід кроків 2.1 і 2.2:
 
 ```text
+20
+0
 
+[1] 394
+[1]+  Exit 124                timeout 4 tcpdump -ni eth0 -S 'host 10.53.0.80 and tcp[tcpflags] & (tcp-fin|tcp-rst) != 0' > t2.txt 2> /dev/null
+20:48:26.440010 IP 10.53.1.1.56714 > 10.53.0.80.80: Flags [F.], seq 3223046173, ack 576944759, win 501, length 0
+20:48:26.440064 IP 10.53.0.80.80 > 10.53.1.1.56714: Flags [F.], seq 576944759, ack 3223046174, win 509, length 0
+20:48:26.497289 IP 10.53.0.80.8080 > 10.53.1.1.56000: Flags [F.], seq 1490489423, ack 1845324609, win 509, length 0
+20:48:26.522348 IP 10.53.1.1.56000 > 10.53.0.80.8080: Flags [F.], seq 1845324609, ack 1490489424, win 502, length 0
+
+< HTTP/1.0 200 OK
+< Content-Type: text/plain
+< 
+* Closing connection
 ```
 
 Вивід кроків 2.3–2.5:
 
 ```text
+1
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+1
 
+local port 40100
+local port 40101
+local port 40102
+local port 40103
+local port 40104
+curl: (45) bind failed with errno 98: Address already in use
+local port 0
+Recv-Q               Send-Q                             Local Address:Port                              Peer Address:Port              Process                                 
+0                    0                                      10.53.1.1:40104                               10.53.0.80:80                 timer:(timewait,59sec,0)               
+0                    0                                      10.53.1.1:40100                               10.53.0.80:80                 timer:(timewait,59sec,0)               
+0                    0                                      10.53.1.1:40101                               10.53.0.80:80                 timer:(timewait,59sec,0)               
+0                    0                                      10.53.1.1:40102                               10.53.0.80:80                 timer:(timewait,59sec,0)               
+0                    0                                      10.53.1.1:40103                               10.53.0.80:80                 timer:(timewait,59sec,0)
+
+local port 40100
 ```
 
 | Показник | Порт 80 | Порт 8080 |
