@@ -12,7 +12,7 @@
 | ПІБ | Савчук Костянтин Андрійович |
 | Група | ІПЗ-2.01 |
 | Ідентифікатор | se-201-28 |
-| Дата виконання | 00.11.26 |
+| Дата виконання | 28.11.26 |
 | Середовище | GitHub Codespaces |
 | Рядок `tcp_congestion_control` з виводу `up.sh` | se-201-28  tcp_congestion_control=cubic |
 | Версія ядра | 6.8.0-1070-azure |
@@ -345,12 +345,37 @@ UDP працює з окремими дейтаграмами і зберіга�
 
 ## Завдання 5. Вікно і RTT
 
-**Прогноз** (записати до вимірювання). RTT із завдання 1: ___ мс. Найбільша швидкість для вікна `<W>`: ___ Мбіт/с. Розрахунок:
+**Прогноз** (записати до вимірювання). RTT із завдання 1: 25,212 мс. Найбільша швидкість для вікна `<W>`: 10,49 Мбіт/с. Розрахунок: швидкість = (вікно * 8) / RTT = (32768 * 8 біт) / 0.025212 с = 262144 біт / 0.025212 с = 10397588 біт/с = 10,40 Мбіт/с.
 
 Вивід кроків 5.2 і 5.3:
 
 ```text
+[1] 67
+10.53.1.1:59764 -> 10.53.0.80:5201 cubic  rtt:25.074/7.063 cwnd:10 bytes_acked:201 snd_wnd:65024
+10.53.1.1:59766 -> 10.53.0.80:5201 cubic  rtt:25.107/0.073 cwnd:71 bytes_acked:6564470 rwnd_limited:3624ms(94.7%) sndbuf_limited:117ms(3.1%) snd_wnd:39096
+[1]+  Done                    iperf3 -c "$SRV" -p "$IPERF_PORT" -C cubic -t 8 -w 32768 > t5w.txt 2>&1
+[  5]   0.00-8.00   sec  13.2 MBytes  13.9 Mbits/sec    0             sender
+[  5]   0.00-8.03   sec  13.2 MBytes  13.8 Mbits/sec                  receiver
 
+iperf Done.
+
+[1] 84
+10.53.1.1:59164 -> 10.53.0.80:5201 cubic  rtt:25.125/0.076 cwnd:146 bytes_acked:13172698 rwnd_limited:2739ms(71.2%) sndbuf_limited:1004ms(26.1%) snd_wnd:95530
+10.53.1.1:59160 -> 10.53.0.80:5201 cubic  rtt:25.208/7.175 cwnd:10 bytes_acked:201 snd_wnd:65024
+[1]+  Done                    iperf3 -c "$SRV" -p "$IPERF_PORT" -C cubic -t 8 -w 65536 > t5w2.txt 2>&1
+[  5]   0.00-8.00   sec  26.4 MBytes  27.7 Mbits/sec    0             sender
+[  5]   0.00-8.03   sec  26.4 MBytes  27.6 Mbits/sec                  receiver
+
+iperf Done.
+
+[1] 101
+10.53.1.1:51998 -> 10.53.0.80:5201 cubic  rtt:25.078/7.066 cwnd:10 bytes_acked:186 snd_wnd:65024
+10.53.1.1:52010 -> 10.53.0.80:5201 cubic  rtt:25.078/0.013 cwnd:6076 bytes_acked:561183926 rwnd_limited:1045ms(27.3%) sndbuf_limited:20ms(0.5%) snd_wnd:4321920
+[1]+  Done                    iperf3 -c "$SRV" -p "$IPERF_PORT" -C cubic -t 8 > t5auto.txt 2>&1
+[  5]   0.00-8.00   sec  1.13 GBytes  1.21 Gbits/sec    0             sender
+[  5]   0.00-8.03   sec  1.13 GBytes  1.21 Gbits/sec                  receiver
+
+iperf Done.
 ```
 
 <!-- snd_wnd і rtt брати з рядка з'єднання з даними. -->
@@ -374,13 +399,57 @@ UDP працює з окремими дейтаграмами і зберіга�
 Вивід кроку 6.1:
 
 ```text
+Sent 1445433438 bytes 955428 pkt (dropped 0, overlimits 0 requeues 0) 
+ Sent 3033341234 bytes 2004546 pkt (dropped 0, overlimits 0 requeues 0) 
+Connecting to host srv.se-201-28.lab, port 5201
+[  5] local 10.53.1.1 port 55180 connected to 10.53.0.80 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   119 MBytes   998 Mbits/sec    0   8.08 MBytes       
+[  5]   1.00-2.00   sec   145 MBytes  1.22 Gbits/sec    0   8.08 MBytes       
+[  5]   2.00-3.00   sec   144 MBytes  1.21 Gbits/sec    0   8.08 MBytes       
+[  5]   3.00-4.00   sec   149 MBytes  1.25 Gbits/sec    0   8.08 MBytes       
+[  5]   4.00-5.00   sec   147 MBytes  1.23 Gbits/sec    0   8.08 MBytes       
+[  5]   5.00-6.00   sec   147 MBytes  1.24 Gbits/sec    0   8.08 MBytes       
+[  5]   6.00-7.00   sec   148 MBytes  1.24 Gbits/sec    0   8.08 MBytes       
+[  5]   7.00-8.00   sec   144 MBytes  1.21 Gbits/sec    0   8.08 MBytes       
+[  5]   8.00-9.00   sec   156 MBytes  1.30 Gbits/sec    0   8.08 MBytes       
+[  5]   9.00-10.00  sec   145 MBytes  1.21 Gbits/sec    0   8.08 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.41 GBytes  1.21 Gbits/sec    0             sender
+[  5]   0.00-10.03  sec  1.41 GBytes  1.21 Gbits/sec                  receiver
 
+iperf Done.
 ```
 
 Вивід кроку 6.2:
 
 ```text
+qdisc netem 8001: root refcnt 3 limit 1000  loss 1%
+ Sent 3033343478 bytes 2004573 pkt (dropped 0, overlimits 0 requeues 0) 
+ Sent 3033343478 bytes 2004573 pkt (dropped 0, overlimits 0 requeues 0) 
+ Sent 3050292355 bytes 2015796 pkt (dropped 41, overlimits 0 requeues 0) 
+Connecting to host srv.se-201-28.lab, port 5201
+[  5] local 10.53.1.1 port 60784 connected to 10.53.0.80 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  8.62 MBytes  72.3 Mbits/sec   83   49.5 KBytes       
+[  5]   1.00-2.00   sec  1.88 MBytes  15.7 Mbits/sec    6   29.7 KBytes       
+[  5]   2.00-3.00   sec   896 KBytes  7.34 Mbits/sec    7   15.6 KBytes       
+[  5]   3.00-4.00   sec   896 KBytes  7.34 Mbits/sec    6   21.2 KBytes       
+[  5]   4.00-5.00   sec  1.75 MBytes  14.7 Mbits/sec    6   24.0 KBytes       
+[  5]   5.00-6.00   sec   896 KBytes  7.34 Mbits/sec    6   22.6 KBytes       
+[  5]   6.00-7.00   sec   896 KBytes  7.34 Mbits/sec    4   28.3 KBytes       
+[  5]   7.00-8.00   sec   896 KBytes  7.34 Mbits/sec   10   11.3 KBytes       
+[  5]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec    9   9.90 KBytes       
+[  5]   9.00-10.00  sec   896 KBytes  7.34 Mbits/sec    6   15.6 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  17.5 MBytes  14.7 Mbits/sec  143             sender
+[  5]   0.00-10.03  sec  15.4 MBytes  12.9 Mbits/sec                  receiver
 
+iperf Done.
+qdisc netem 8001: root refcnt 3 limit 1000 
+ Sent 3050301439 bytes 2015802 pkt (dropped 41, overlimits 0 requeues 0)
 ```
 
 | Показник | 6.1 (без втрат) | 6.2 (втрати `<L>`) |
